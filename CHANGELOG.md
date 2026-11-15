@@ -4,6 +4,15 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- GitHub Actions workflow (`.github/workflows/ci.yml`): test matrix on Python
+  3.8-3.13, CLI smoke test, sdist/wheel build installed into a clean venv, and a
+  bridge end-to-end smoke (health, list, `lfb ls`, `lfb cat`).
+- README CI badge.
+
 ## [0.1.0] - 2025-01-01
 
 ### Added

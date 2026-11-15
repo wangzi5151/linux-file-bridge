@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Run tests
+        run: python -m unittest discover -v
+
+      - name: CLI smoke test
+        run: |
+          lfb --version
+          lfb --help
+          lfb init --name ci --root project="$PWD" --force
+          lfb roots --env ci
+          lfb health --env ci
+          lfb doctor
+
+  packaging:
+    name: packaging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+
+      - name: Install the wheel in a clean venv
+        run: |
+          python -m venv /tmp/venv
+          /tmp/venv/bin/pip install --upgrade pip
+          /tmp/venv/bin/pip install dist/*.whl
+          /tmp/venv/bin/lfb --version
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+          if-no-files-found: error
+
+  bridge-smoke:
+    name: bridge e2e smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Start bridge, hit the API, stop it
+        run: |
+          set -euo pipefail
+          export XDG_CONFIG_HOME="$RUNNER_TEMP/cfg"
+          mkdir -p "$XDG_CONFIG_HOME" "$RUNNER_TEMP/project"
+          echo "hello from ci" > "$RUNNER_TEMP/project/hello.txt"
+          lfb init --name ci --root project="$RUNNER_TEMP/project" --force
+          lfb serve --env ci --port 8790 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for _ in $(seq 1 50); do
+            if curl -fsS http://127.0.0.1:8790/v1/health >/dev/null 2>&1; then break; fi
+            sleep 0.2
+          done
+          TOKEN=$(lfb env token ci)
+          curl -fsS http://127.0.0.1:8790/v1/health
+          curl -fsS -H "Authorization: Bearer $TOKEN" \
+            "http://127.0.0.1:8790/v1/list?root=project&path=."
+          lfb ls ci:project
+          lfb cat ci:project/hello.txt | grep -q "hello from ci"

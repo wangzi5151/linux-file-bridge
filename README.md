@@ -1,5 +1,6 @@
 # Linux File Bridge · Linux 文件互通器
 
+[![CI](https://github.com/wangzi5151/linux-file-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/wangzi5151/linux-file-bridge/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -445,7 +446,7 @@ make test          # 等价于 python3 -m unittest discover -v
 
 测试覆盖：配置校验、路径穿越、符号链接逃逸、只读 root、原子读写、mtime 保留、Range 下载、HTTP 认证、Gateway 本地/代理、MCP 协议与工具、CLI、跨环境 sync/delete。
 
-仓库附带了 [`examples/github-actions-ci.yml`](examples/github-actions-ci.yml)。把复制到 `.github/workflows/ci.yml` 即可启用 GitHub Actions（当前仓库的自动化上传 token 没有 `workflow` scope，所以没有直接提交 workflow 文件）。
+GitHub Actions 已启用，配置见 [`.github/workflows/ci.yml`](.github/workflows/ci.yml)：在 Python 3.8 / 3.9 / 3.10 / 3.11 / 3.12 / 3.13 上跑完整测试、CLI 冒烟、wheel/sdist 构建与干净虚拟环境安装，并启动真实 bridge 走一遍 health → list → `lfb ls` → `lfb cat` 的端到端冒烟。Fork 项目时可直接沿用；[`examples/github-actions-ci.yml`](examples/github-actions-ci.yml) 保留为精简模板。
 
 目录结构：
 

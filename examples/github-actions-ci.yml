@@ -1,6 +1,6 @@
-# Copy this file to .github/workflows/ci.yml to run the test suite on GitHub.
-# It is kept outside .github/workflows here so a token without the "workflow"
-# scope can still push the rest of the project.
+# Minimal CI template for forks and mirrors.
+# The upstream repository uses the full version in .github/workflows/ci.yml
+# (Python 3.8-3.13 matrix, packaging check, and a real bridge end-to-end smoke).
 
 name: CI
 
