@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "default_env": "ubuntu-main",
+  "environments": {
+    "ubuntu-main": {
+      "kind": "local",
+      "roots": {
+        "project": {
+          "path": "/workspace/linux",
+          "mode": "rw",
+          "description": "Main project workspace"
+        }
+      },
+      "token": "REPLACE_WITH_A_RANDOM_TOKEN",
+      "serve": {
+        "host": "127.0.0.1",
+        "port": 8790
+      },
+      "exec": {
+        "enabled": false,
+        "allow_shell": false
+      }
+    }
+  },
+  "gateway": {
+    "host": "127.0.0.1",
+    "port": 8787,
+    "token": "REPLACE_WITH_ANOTHER_RANDOM_TOKEN",
+    "default_env": "ubuntu-main"
+  }
+}

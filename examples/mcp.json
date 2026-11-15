@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "linux-file-bridge": {
+      "command": "/usr/bin/python3",
+      "args": [
+        "-m",
+        "lfb",
+        "--config",
+        "/root/.config/lfb/config.json",
+        "mcp"
+      ]
+    }
+  }
+}

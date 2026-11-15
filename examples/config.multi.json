@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "default_env": "ubuntu-main",
+  "environments": {
+    "ubuntu-main": {
+      "kind": "local",
+      "roots": {
+        "project": {
+          "path": "/workspace/linux",
+          "mode": "rw"
+        },
+        "home": {
+          "path": "/root",
+          "mode": "ro"
+        }
+      },
+      "token": "REPLACE_WITH_TOKEN_FOR_MAIN",
+      "serve": {
+        "host": "127.0.0.1",
+        "port": 8790
+      }
+    },
+    "ubuntu-dev": {
+      "kind": "bridge",
+      "url": "http://127.0.0.1:8791",
+      "token": "REPLACE_WITH_TOKEN_FROM_DEV",
+      "timeout": 30
+    },
+    "termux-storage": {
+      "kind": "local",
+      "roots": {
+        "shared": {
+          "path": "/data/data/com.termux/files/home/storage/shared",
+          "mode": "ro"
+        }
+      },
+      "token": "REPLACE_WITH_TOKEN_FOR_TERMUX",
+      "serve": {
+        "host": "127.0.0.1",
+        "port": 8792
+      }
+    }
+  },
+  "gateway": {
+    "host": "127.0.0.1",
+    "port": 8787,
+    "token": "REPLACE_WITH_GATEWAY_TOKEN",
+    "default_env": "ubuntu-main"
+  }
+}
