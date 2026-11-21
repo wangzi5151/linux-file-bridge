@@ -8,6 +8,13 @@ All notable changes are documented here. The format follows
 
 ### Added
 
+- Tests for two previously untested modules: `lfb/errors.py` (error
+  codes/statuses are the HTTP API and MCP contract; `from_payload`
+  round-trips every mapped code) and `lfb/targets.py` (`env:root/path`
+  parsing, `..` escape rejection, explicit env/root arguments).
+  Suite grows from 53 to 75 tests.
+- Root `SECURITY.md` with the vulnerability reporting policy, pointing
+  to the full security model in `docs/SECURITY.md`.
 - GitHub Actions workflow (`.github/workflows/ci.yml`): test matrix on Python
   3.8-3.13, CLI smoke test, sdist/wheel build installed into a clean venv, and a
   bridge end-to-end smoke (health, list, `lfb ls`, `lfb cat`).
